@@ -15,5 +15,5 @@ app.get('/js/map.js', function(req, res) {
 });
 
 io.on('connection', function(socket){
-    socket.on('')
+    //socket.on('')
 });

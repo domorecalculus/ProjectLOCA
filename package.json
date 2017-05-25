@@ -4,6 +4,7 @@
   "description": "you know what it is",
   "dependencies": {
     "express": "^4.15.2",
+    "mapbox-gl": "^0.37.0",
     "socket.io": "^2.0.1"
   }
 }
