@@ -9,7 +9,7 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.36.0/mapbox-gl.css' rel='stylesheet' />
 
     <style>
-        body, html, #map {\
+        body, html, #mapContainer, #map {\
             margin: 0;
             padding: 0;
             height: 100%;
@@ -31,41 +31,64 @@
 <body>
 
 
-    <div id='splashContainer' class="container">
+    <div id='splash' class="container">
         <form id="form" action="">
             <input type="text" id="room" placeholder="Enter missionary code..."> <br>
             <input type="submit" value="Go!">
         </form>
     </div>
 
-    <div id='map' ></div>
+    <div id="missionaryHome" class="container">
+        <form id="mapEntry" action="">
+            <p>Enter name for prediction: </p>
+            <input type="text" id='name'><br>
+            <input type="submit" id='mapEntrySubmit' value="Go to map">
+        </form>
+    </div>
+
+    <div id='mapContainer' class="container">
+        <button type="button" id="mapBack">Back to Missionary Page</button>
+        <div id='map' ></div>
+    </div>
 
 
 
     <script>
         var socket = io();
-        socket.on('connect', function(){
-        });
 
         var mymap = L.map('map').setView([51.505, -0.09], 3);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoiZG9tb3JlY2FsY3VsdXMiLCJhIjoiY2ozM3JtOWdkMDBqZjMzczk4NTE2dTc4ZyJ9.TU2JPGjVGLmUjhFsr7Q-tQ'
-}).addTo(mymap);
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiZG9tb3JlY2FsY3VsdXMiLCJhIjoiY2ozM3JtOWdkMDBqZjMzczk4NTE2dTc4ZyJ9.TU2JPGjVGLmUjhFsr7Q-tQ'
+        }).addTo(mymap);
 
         $(document).ready(function(){
-            $('#map').hide();
-            //$('#map').width($(document).width());
-            //$('#map').height($(document).height());
+            $('#mapContainer').hide();
+            $('#missionaryHome').hide();
 
             $('#form').submit(function(e){
                 e.preventDefault();
+                $('#splash').hide();
+                $('#missionaryHome').show();
+            });
 
-                $('#splashContainer').hide();
-                $('#map').show();
+            $('#mapEntrySubmit').attr('disabled', 'disabled');
+            $('#mapEntry').keyup(function(){
+                $('#mapEntrySubmit').removeAttr('disabled');
+            });
+
+            $('#mapEntry').submit(function(e){
+                e.preventDefault();
+                $('#missionaryHome').hide();
+                $('#mapContainer').show();
+            });
+
+            $('#mapBack').click(function(){
+                $('#mapContainer').hide();
+                $('#missionaryHome').show();
             });
         });
     </script>
