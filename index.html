@@ -9,11 +9,18 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.36.0/mapbox-gl.css' rel='stylesheet' />
 
     <style>
-        body, html, #mapContainer, #map {\
+        body, html, #mapContainer, #map {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
+            z-index: 1;
+        }
+        
+        #mapBack, #mapButtonContainer{
+            position: absolute;
+            margin-left: 54px;
+            z-index: 2;
         }
     </style>
 
@@ -22,7 +29,7 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://d3js.org/topojson.v0.min.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/map.js"></script>
 
 
@@ -47,8 +54,10 @@
     </div>
 
     <div id='mapContainer' class="container">
-        <button type="button" id="mapBack">Back to Missionary Page</button>
         <div id='map' ></div>
+        <div id='mapButtonContainer'>
+            <input type="button" id='mapBack' value='Back to missionary home'/>
+        </div>
     </div>
 
 
