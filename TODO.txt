@@ -1,0 +1,3 @@
+Splash screen on startup asks for name - can only delete if name matches marker's name
+
+store markers in json file
