@@ -29,7 +29,7 @@
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js" integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg==" crossorigin=""></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://d3js.org/topojson.v0.min.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/map.js"></script>
 
@@ -46,21 +46,10 @@
             <input type="submit" value="Go!">
         </form>
     </div>
-    <!--
-    <div id="missionaryHome" class="container">
-        <form id="mapEntry" action="">
-            <p>Enter name for prediction: </p>
-            <input type="text" id='name'><br>
-            <input type="submit" id='mapEntrySubmit' value="Go to map">
-        </form>
-    </div>-->
 
     <div id='mapContainer' class="container">
         <div id='map' ></div>
-        <!--<input type="button" id='mapBack' value='Back to missionary home'/>-->
     </div>
-
-
 
     <script>
         var socket = io();
@@ -87,14 +76,16 @@
                 newMarker.on('mouseout', function (e) {
                     this.closePopup();
                 });
-                //newMarker.setContent(name);
+                newMarker.on('click', function(e){
+                    var bDelete = confirm("Do you want to delete this marker?");
+
+                });
             }
         });
 
         $(document).ready(function(){
             var name;
             $('#mapContainer').hide();
-            //$('#missionaryHome').hide();
 
             $('#form').submit(function(e){
                 e.preventDefault();
@@ -103,24 +94,6 @@
                 $('#splash').hide();
                 $('#mapContainer').show();
             });
-
-            /*$('#mapEntrySubmit').attr('disabled', 'disabled');
-            $('#mapEntry').keyup(function(){
-                $('#mapEntrySubmit').removeAttr('disabled');
-            });
-
-            $('#mapEntry').submit(function(e){
-                e.preventDefault();
-                $('#missionaryHome').hide();
-                $('#mapContainer').show();
-            });
-
-            $('#mapBack').click(function(){
-                $('#mapContainer').hide();
-                $('#missionaryHome').show();
-            });*/
-
-
         });
     </script>
 </body>

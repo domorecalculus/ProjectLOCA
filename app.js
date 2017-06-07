@@ -1,8 +1,11 @@
 var app = require('express')();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const WebSocket = require('ws');
+const ws = WebSocket('ws://localhost:3000');
+//var io = require('socket.io')(server);
+//var fs = require('fs');
 
-server.listen(process.env.PORT || 3000, function() {
+server.listen(3000, function() {
     console.log('Now listening...');
 });
 
@@ -15,5 +18,17 @@ app.get('/js/map.js', function(req, res) {
 });
 
 io.on('connection', function(socket){
-    //socket.on('')
+    console.log("A user connected.");
+
+    /*socket.on('addedMarker', function(data){
+
+    });
+
+    socket.on('removedMarker', function(data){
+
+    });*/
+
+    socket.on('disconnect', function(){
+        console.log("A user disconnected.");
+    });
 });
