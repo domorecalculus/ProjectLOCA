@@ -3,7 +3,8 @@ const http = require('http');
 const WebSocket = require('ws');
 const fs = require('fs');
 
-const app = express();
+var app = express();
+app.set('port', (process.env.PORT || 3000));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -26,8 +27,8 @@ wss.on('connection', function(ws){
     });
 });
 
-server.listen(3000, function() {
-    console.log('Now listening...');
+server.listen(app.get('port'), function() {
+    console.log('Now listening on port ' + app.get('port'));
 });
 
 app.get('/', function(req, res) {

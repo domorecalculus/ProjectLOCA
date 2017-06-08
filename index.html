@@ -62,7 +62,8 @@
 
         newMarkerGroup = new L.LayerGroup();
 
-        var ws = new WebSocket(`ws://localhost:3000`);
+        var HOST = location.origin.replace(/^http/, 'ws')
+        var ws = new WebSocket(HOST);
         ws.onmessage = function(message){
             data = JSON.parse(message.data);
             console.log(data);
