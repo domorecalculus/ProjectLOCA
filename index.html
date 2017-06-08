@@ -27,11 +27,7 @@
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js" integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg==" crossorigin=""></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://d3js.org/topojson.v0.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="js/map.js"></script>
 
 
 </head>
@@ -52,7 +48,8 @@
     </div>
 
     <script>
-        var socket = io();
+        var name;
+        var data;
 
         var mymap = L.map('map').setView([51.505, -0.09], 3);
 
@@ -64,12 +61,15 @@
         }).addTo(mymap);
 
         newMarkerGroup = new L.LayerGroup();
-        mymap.on('click', function(e){
-            var name = prompt("Enter your name for the prediction: ");
-            if(name == null || name == ""){
-            } else {
-                var newMarker = new L.marker(e.latlng, false, true, name).addTo(mymap);
-                newMarker.bindPopup(name + "'s Guess");
+
+        var ws = new WebSocket(`ws://localhost:3000`);
+        ws.onmessage = function(message){
+            data = JSON.parse(message.data);
+            console.log(data);
+            for(var i=0; i<data.markers.length; i++){
+                var newMarker = new L.marker(data.markers[i].latlng, false, true, name).addTo(mymap);
+                newMarker.bindPopup(data.markers[i].name + "'s Guess");
+
                 newMarker.on('mouseover', function (e) {
                     this.openPopup();
                 });
@@ -78,13 +78,50 @@
                 });
                 newMarker.on('click', function(e){
                     var bDelete = confirm("Do you want to delete this marker?");
+                    if(bDelete){
+                        console.log(this);
+                        var dName = this._popup._content.substring(0, this._popup._content.indexOf("'"));
+                        if(name === dName){
+                            var dLatlng = {"lat": this._latlng.lat, "lng": this._latlng.lng};
+                            var dObj = {'name': dName, 'latlng': dLatlng};
+                            var dIndex = data.markers.map(function(e) { return e.latlng.lat; }).indexOf(dLatlng.lat);
 
+                            console.log(dIndex);
+                            console.log(this._latlng);
+                            console.log(dObj);
+
+                            ws.send(JSON.stringify({'type': 'delete', 'index': dIndex}))
+                            data.markers.splice(dIndex, 1);
+                            mymap.removeLayer(this);
+                        } else {
+                            alert("That's not your marker!");
+                        }
+                    }
                 });
             }
+        };
+
+        mymap.on('click', function(e){
+            var newMarker = new L.marker(e.latlng, false, true, name).addTo(mymap);
+            newMarker.bindPopup(name + "'s Guess");
+
+            ws.send(JSON.stringify({'type': 'add', 'name': name, 'latlng': e.latlng}));
+
+            newMarker.on('mouseover', function (e) {
+                this.openPopup();
+            });
+            newMarker.on('mouseout', function (e) {
+                this.closePopup();
+            });
+            newMarker.on('click', function(e){
+                var bDelete = confirm("Do you want to delete this marker?");
+                if(bDelete){
+                    mymap.removeLayer(this);
+                }
+            });
         });
 
         $(document).ready(function(){
-            var name;
             $('#mapContainer').hide();
 
             $('#form').submit(function(e){

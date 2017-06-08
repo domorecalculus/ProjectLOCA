@@ -1,9 +1,30 @@
-var app = require('express')();
-var server = require('http').Server(app);
+const express = require('express');
+const http = require('http');
 const WebSocket = require('ws');
-const ws = WebSocket('ws://localhost:3000');
-//var io = require('socket.io')(server);
-//var fs = require('fs');
+const fs = require('fs');
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+var markerData = JSON.parse(fs.readFileSync(__dirname + '/markers.json', 'utf8'));
+console.log(markerData);
+
+wss.on('connection', function(ws){
+    console.log("A user connected");
+    ws.send(JSON.stringify(markerData));
+
+    ws.on('message', function(message){
+        console.log(message);
+        data = JSON.parse(message);
+        if(data.type === 'add'){
+            markerData.markers.push({'name': data.name, 'latlng': data.latlng})
+        } else if (data.type === 'delete') {
+            markerData.markers.splice(data.index, 1);
+            console.log("Marker deleted.");
+        }
+    });
+});
 
 server.listen(3000, function() {
     console.log('Now listening...');
@@ -13,22 +34,15 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/js/map.js', function(req, res) {
-    res.sendFile(__dirname + '/js/map.js');
+//markerData = {'markers': []}
+
+
+process.on('exit', function() {
+    fs.writeFileSync(__dirname + '/markers.json', JSON.stringify(markerData), 'utf8');
 });
 
-io.on('connection', function(socket){
-    console.log("A user connected.");
-
-    /*socket.on('addedMarker', function(data){
-
-    });
-
-    socket.on('removedMarker', function(data){
-
-    });*/
-
-    socket.on('disconnect', function(){
-        console.log("A user disconnected.");
-    });
+process.on('SIGINT', function() {
+    console.log("recognized interupt");
+    console.log(markerData);
+    process.exit();
 });
