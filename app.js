@@ -26,6 +26,7 @@ wss.on('connection', function(ws){
         console.log(JSON.stringify(row));
       });
   });
+  console.log("markerData: " + markerData);
   ws.send(JSON.stringify(markerData));
 
   ws.on('message', function(message){
