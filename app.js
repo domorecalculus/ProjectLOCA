@@ -24,9 +24,12 @@ wss.on('connection', function(ws){
       .on('row', function(row) {
         markerData.markers.push({'name': row.name, 'latlng': {lat: row.lat, lng: row.lng}})
         console.log(JSON.stringify(row));
+      })
+      .on('end', function(){
+        console.log("markerData: " + markerData);
+        ws.send(JSON.stringify(markerData));
       });
-    console.log("markerData: " + markerData);
-    ws.send(JSON.stringify(markerData));
+
   });
 
   ws.on('message', function(message){
