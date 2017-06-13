@@ -55,13 +55,11 @@ wss.on('connection', function(ws){
 
             client
               .query('DELETE FROM Markers WHERE Lat = ' + markerData.markers[data.index].latlng.lat + ';')
-              .on('row', function(row) {
-                console.log(JSON.stringify(row));
+              .on('end', function() {
+                //Pre-database
+                markerData.markers.splice(data.index, 1);
               });
           });
-
-          //Pre-database
-          markerData.markers.splice(data.index, 1);
       }
   });
 });
