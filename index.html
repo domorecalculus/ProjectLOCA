@@ -64,6 +64,10 @@
             accessToken: 'pk.eyJ1IjoiZG9tb3JlY2FsY3VsdXMiLCJhIjoiY2ozM3JtOWdkMDBqZjMzczk4NTE2dTc4ZyJ9.TU2JPGjVGLmUjhFsr7Q-tQ'
         }).addTo(mymap);
 
+        var guide = new L.marker([39.5, -77.3], { opacity: 0.01 }); //opacity may be set to zero
+        guide.bindTooltip("Click the map to place a marker\nClick a marker to delete it", {permanent: true, className: "my-label", offset: [0, 0] });
+        guide.addTo(map);
+
         newMarkerGroup = new L.LayerGroup();
 
         var HOST = location.origin.replace(/^http/, 'ws')
