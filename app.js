@@ -39,7 +39,7 @@ wss.on('connection', function(ws){
             console.log('Connected to postgres! Adding marker.');
 
             client
-              .query('INSERT INTO Markers VALUES(' + data.name + ',' + data.latlng.lat + ',' + data.latlng.lng + ');')
+              .query('INSERT INTO Markers (Name, Lat, Lng) VALUES(' + data.name + ',' + data.latlng.lat + ',' + data.latlng.lng + ');')
           });
 
           //Pre-database
