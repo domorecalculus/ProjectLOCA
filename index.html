@@ -89,7 +89,7 @@
                         if(name === dName){
                             var dLatlng = {"lat": this._latlng.lat, "lng": this._latlng.lng};
                             var dObj = {'name': dName, 'latlng': dLatlng};
-                            var dIndex = data.markers.map(function(e) { return e.latlng.lat; }).indexOf(dLatlng.lat);
+                            var dIndex = data.markers.indexOf(dObj); // Prev index finder - data.markers.map(function(e) { return e.latlng.lat; }).indexOf(dLatlng.lat);
 
                             console.log(dIndex);
                             console.log(this._latlng);
