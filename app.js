@@ -18,7 +18,7 @@ wss.on('connection', function(ws){
   pg.connect(process.env.DATABASE_URL, function(err, client) {
     if (err) throw err;
     console.log('Connected to postgres! Getting markers.');
-
+    markerData = {"markers":[]};
     client
       .query('SELECT Name,Lat,Lng FROM Markers;')
       .on('row', function(row) {
