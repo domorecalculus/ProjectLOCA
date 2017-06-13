@@ -25,43 +25,40 @@ wss.on('connection', function(ws){
         markerData.markers.push({'name': row.name, 'latlng': {lat: row.lat, lng: row.lng}})
         console.log(JSON.stringify(row));
       });
+    console.log("markerData: " + markerData);
+    ws.send(JSON.stringify(markerData));
   });
-  console.log("markerData: " + markerData);
-  ws.send(JSON.stringify(markerData));
 
   ws.on('message', function(message){
       console.log(message);
       data = JSON.parse(message);
       if(data.type === 'add'){
-          //Pre-database
-          //markerData.markers.push({'name': data.name, 'latlng': data.latlng})
-
           pg.defaults.ssl = true;
           pg.connect(process.env.DATABASE_URL, function(err, client) {
             if (err) throw err;
-            console.log('Connected to postgres! Getting markers.');
+            console.log('Connected to postgres! Adding marker.');
 
             client
-              .query('SELECT Name,Lat,Lng FROM Markers;')
-              .on('row', function(row) {
-                console.log(JSON.stringify(row));
-              });
+              .query('INSERT INTO Markers VALUES(' + data.name + ',' + data.latlng.lat + ',' + data.latlng.lng + ');')
           });
+
+          //Pre-database
+          markerData.markers.push({'name': data.name, 'latlng': data.latlng})
       } else if (data.type === 'delete') {
-          //Pre-database
-          //markerData.markers.splice(data.index, 1);
-
           pg.defaults.ssl = true;
           pg.connect(process.env.DATABASE_URL, function(err, client) {
             if (err) throw err;
-            console.log('Connected to postgres! Getting schemas...');
+            console.log('Connected to postgres! Deleting marker.');
 
             client
-              .query('SELECT table_schema,table_name FROM information_schema.tables;')
+              .query('DELETE FROM Markers WHERE Lat = ' + markerData.markers[data.index].latlng.lat + ';')
               .on('row', function(row) {
                 console.log(JSON.stringify(row));
               });
           });
+
+          //Pre-database
+          markerData.markers.splice(data.index, 1);
       }
   });
 });
