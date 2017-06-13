@@ -22,7 +22,7 @@ wss.on('connection', function(ws){
     client
       .query('SELECT Name,Lat,Lng FROM Markers;')
       .on('row', function(row) {
-        markerData.markers.push({'name': row.name, 'latlng': {lat: row.lat, lng: row.lng}})
+        markerData.markers.push({'name': row.name.trim(), 'latlng': {lat: row.lat, lng: row.lng}})
         console.log(JSON.stringify(row));
       })
       .on('end', function(){
