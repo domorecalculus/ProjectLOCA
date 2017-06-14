@@ -9,7 +9,7 @@ app.set('port', (process.env.PORT || 5000));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-var markerData = {"markers":[]}; //Pre-database = JSON.parse(fs.readFileSync(__dirname + '/markers.json', 'utf8'));
+var markerData = {"markers":[]};
 console.log(markerData);
 
 wss.on('connection', function(ws){
